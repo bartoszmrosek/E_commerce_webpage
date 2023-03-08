@@ -3,21 +3,25 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+  --navyBlue: #1B325F;
+  --paleBlue: #9CC4E4;
+  --milky: #E9F2F9;
+  --mainBlue: #3A89C9;
+  --accentingRed: #F26C4F;
 }
 
-body {
+* {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  padding: 0;
+}
+
+#root {
   min-height: 100vh;
+  min-width: 100vw;
 }

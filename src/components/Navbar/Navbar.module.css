@@ -1,0 +1,47 @@
+.navigation {
+    position: sticky;
+    display: flex;
+    flex-direction: row;
+    flex: 1 1 0px;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    background-color: var(--mainBlue);
+}
+
+.navigationLink {
+    position: relative;
+    padding: 1rem 2rem;
+    margin: 1rem 0;
+    text-decoration: none;
+    font-weight: bolder;
+    font-size: larger;
+    color: var(--milky);
+}
+
+.selected {
+    border-bottom: 2px solid var(--accentingRed);
+    color: var(--accentingRed);
+}
+
+.navigationLink::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: -1px;
+    left: 0;
+    background-color: var(--accentingRed);
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+}
+
+.navigationLink:hover {
+    color: var(--accentingRed);
+}
+
+.navigationLink:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
