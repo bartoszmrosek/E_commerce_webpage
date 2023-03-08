@@ -1,0 +1,7 @@
+.appContainer {
+    background-color: var(--milky);
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    inset: 0;
+}

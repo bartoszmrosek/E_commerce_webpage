@@ -17,6 +17,7 @@
     font-weight: bolder;
     font-size: larger;
     color: var(--milky);
+    border-bottom: 2px solid transparent;
 }
 
 .selected {

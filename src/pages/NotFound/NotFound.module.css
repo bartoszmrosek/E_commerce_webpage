@@ -1,0 +1,30 @@
+.notFound {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.returnBtn {
+    padding: 1rem 2rem;
+    border-radius: 6rem;
+    border: 0;
+    background-color: var(--mainBlue);
+    color: var(--milky);
+    font-size: large;
+    filter: drop-shadow(0 0 8px var(--mainBlue));
+    cursor: pointer;
+}
+
+.returnBtn:hover {
+    color: var(--navyBlue);
+    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.4));
+}
+
+.returnBtn:active {
+    transform: scale(0.9);
+}
