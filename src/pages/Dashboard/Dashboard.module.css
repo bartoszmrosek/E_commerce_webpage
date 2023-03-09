@@ -40,26 +40,19 @@
 }
 
 .cartsTable {
-    width: 100%;
     height: 100%;
+    width: 90%;
     display: table;
-    padding-right: env(safe-area-inset-right);
-    padding-left: env(safe-area-inset-left);
-    padding-bottom: calc(8rem + env(safe-area-inset-bottom));
+    margin: 0 2rem;
+    margin-bottom: 8rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.65);
 }
 
 .cartsTableHeaders {}
 
 .cartsTableBody {
     width: 100%;
-}
-
-.cartsTableAdditional {
-    width: 100%;
-    text-align: center;
-    vertical-align: middle;
-    font-size: larger;
-    font-weight: bold;
 }
 
 .retryBtn {
@@ -80,10 +73,5 @@
 @media only screen and (max-width: 721px) {
     .newCartBtn {
         width: 90%;
-    }
-
-    .cartsTableHeaders>th:nth-child(2),
-    .cartsTableHeaders>th:nth-child(3) {
-        display: none;
     }
 }

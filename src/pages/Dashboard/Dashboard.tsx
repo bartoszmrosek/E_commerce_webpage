@@ -3,7 +3,10 @@ import { GridLoader } from "react-spinners";
 import { useFetch } from "../../hooks/useFetch";
 import { Cart } from "../../types/Cart";
 import { isValidError } from "../../utils/isValidError";
+import { DashboardTableExtraInfo } from "../../components/DasboardTableExtraInfo/DasboardTableExtraInfo";
 import styles from "./Dashboard.module.css";
+import { DasboardCart } from "../../components/DashboardCart/DashboardCart";
+import { useMobileMedia } from "../../hooks/useMobileMedia";
 
 interface CartsType {
     carts: Cart[];
@@ -13,7 +16,8 @@ interface CartsType {
 }
 
 export const Dashboard: React.FC = () => {
-    const { response, isLoading, makeRequest } = useFetch<CartsType>("https://dummyjson.com/carts");
+    const { response, isLoading, makeRequest } = useFetch<CartsType>("https://dummyjson.com/carts/");
+    const { isMobile } = useMobileMedia();
     useEffect(() => {
         const controller = new AbortController();
         void makeRequest({ signal: controller.signal });
@@ -22,6 +26,7 @@ export const Dashboard: React.FC = () => {
     const retryFetch = useCallback(() => {
         void makeRequest();
     }, [makeRequest]);
+
     return (
         <main className={styles.dashboardContainer}>
             <h1 className={styles.cartsHeader}>All carts</h1>
@@ -29,32 +34,45 @@ export const Dashboard: React.FC = () => {
                 <thead>
                     <tr className={styles.cartsTableHeaders}>
                         <th>Cart id</th>
-                        <th>Total products</th>
-                        <th>Total quantity</th>
+                        {!isMobile && (
+                            <>
+                                <th>Total products</th>
+                                <th>Total quantity</th>
+                            </>
+                        )}
                         <th>Total</th>
                         <th>Discounted total</th>
                     </tr>
                 </thead>
                 <tbody className={styles.cartsTableBody}>
                     {!isLoading && !isValidError(response)
-                        ? <tr>ok</tr> :
+                        ? (
+                            <>
+                                {response !== null && response.carts.length > 0 ?
+                                    response.carts.map((cart) => <DasboardCart cart={cart} key={cart.id} />)
+                                    : (
+                                        <DashboardTableExtraInfo>
+                                            No carts can be found! Add some!
+                                        </DashboardTableExtraInfo>
+                                    )}
+                            </>
+                        ) :
+                        // loading and error displayers
                         (
-                            <tr>
-                                <td colSpan={100} className={styles.cartsTableAdditional}>
-                                    {isLoading ? (
+                            <DashboardTableExtraInfo>
+                                {isLoading ? (
+                                    <>
+                                        <GridLoader loading={true} color="var(--mainBlue)" />
+                                        <p>Loading data...</p>
+                                    </>
+                                )
+                                    : (
                                         <>
-                                            <GridLoader loading={true} color="var(--mainBlue)" />
-                                            <p>Loading data...</p>
+                                            <p>Loading data failed</p>
+                                            <button onClick={retryFetch} className={styles.retryBtn}>Retry</button>
                                         </>
-                                    )
-                                        : (
-                                            <>
-                                                <p>Loading data failed</p>
-                                                <button onClick={retryFetch} className={styles.retryBtn}>Retry</button>
-                                            </>
-                                        )}
-                                </td>
-                            </tr>
+                                    )}
+                            </DashboardTableExtraInfo>
                         )}
                 </tbody>
             </table>
