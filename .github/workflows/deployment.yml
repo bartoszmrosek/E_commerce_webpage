@@ -2,7 +2,7 @@ name: CD
 
 on:
   workflow_run:
-    workflows: [tests]
+    workflows: [Tests CI]
     branches: [master]
     types:
       - completed
