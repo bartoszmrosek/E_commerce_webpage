@@ -20,8 +20,8 @@ export const DasboardCart: React.FC<DasboardCartProps> = memo(function DasboardC
                         <td>{totalQuantity} pieces</td>
                     </>
                 )}
-                <td>{total} eur</td>
-                <td>{discountedTotal} eur</td>
+                <td>{total} €</td>
+                <td>{discountedTotal} €</td>
             </tr>
             <tr className={styles.dashboardCartActions}>
                 <td colSpan={100} className={styles.dashboardCartActions}>
