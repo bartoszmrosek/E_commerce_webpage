@@ -1,0 +1,22 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: [CI]
+    branches: [master]
+    types:
+      - completed
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: trigger netlify build
+        run: |
+          curl -X POST -d '{}' ${{ secrets.WORKFLOWTRIGGER }}
