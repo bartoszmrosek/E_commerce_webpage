@@ -45,7 +45,7 @@ export const Dashboard: React.FC = () => {
                             </>
                         )}
                         <th>Total</th>
-                        <th>Discounted total</th>
+                        <th>After discount</th>
                     </tr>
                 </thead>
                 <tbody className={styles.cartsTableBody}>
