@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { CSSProperties, useCallback, useEffect } from "react";
 import { GridLoader } from "react-spinners";
 import { useFetch } from "../../hooks/useFetch";
 import { Cart } from "../../types/Cart";
@@ -27,10 +27,14 @@ export const Dashboard: React.FC = () => {
         void makeRequest();
     }, [makeRequest]);
 
+    const whichDisplayMode: CSSProperties = {
+        display: isValidError(response) || isLoading || (response === null || response.carts.length < 1) ? "table" : "block",
+    };
+
     return (
         <main className={styles.dashboardContainer}>
             <h1 className={styles.cartsHeader}>All carts</h1>
-            <table className={styles.cartsTable}>
+            <table className={styles.cartsTable} style={whichDisplayMode}>
                 <thead>
                     <tr className={styles.cartsTableHeaders}>
                         <th>Cart id</th>
