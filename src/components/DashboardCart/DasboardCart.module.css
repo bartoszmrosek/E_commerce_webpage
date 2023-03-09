@@ -1,3 +1,12 @@
+.dashboardCartRow>td,
+.dashboardCartActions {
+    padding: 0.5rem 0;
+}
+
+.dashboardCartActions+.dashboardCartRow {
+    border-top: 1px solid black;
+}
+
 .dashboardCartRow>td {
     vertical-align: middle;
     text-align: center;
@@ -7,4 +16,39 @@
     width: 100%;
     text-align: center;
     vertical-align: middle;
+}
+
+.viewBtn,
+.deleteBtn {
+    padding: 1rem 6rem;
+    margin: 0.75rem;
+    border-radius: 6rem;
+    border: 0;
+    text-align: center;
+    cursor: pointer;
+}
+
+.viewBtn:active,
+.deleteBtn:active {
+    transform: scale(0.95);
+}
+
+.viewBtn {
+    background-color: var(--mainBlue);
+    color: var(--milky);
+    filter: drop-shadow(0 0 12px var(--mainBlue));
+}
+
+.viewBtn:hover {
+    filter: drop-shadow(0 0 12px var(--mainBlue)) brightness(0.9);
+}
+
+.deleteBtn {
+    background-color: var(--accentingRed);
+    color: var(--navyBlue);
+    filter: drop-shadow(0 0 12px var(--accentingRed));
+}
+
+.deleteBtn:hover {
+    filter: drop-shadow(0 0 12px var(--accentingRed)) brightness(0.9);
 }

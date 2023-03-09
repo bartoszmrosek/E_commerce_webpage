@@ -16,17 +16,17 @@ export const DasboardCart: React.FC<DasboardCartProps> = memo(function DasboardC
                 <td rowSpan={2}>{id}</td>
                 {!isMobile && (
                     <>
-                        <td>{totalProducts}</td>
-                        <td>{totalQuantity}</td>
+                        <td>{totalProducts} sztuk</td>
+                        <td>{totalQuantity} sztuk</td>
                     </>
                 )}
-                <td>{total}</td>
-                <td>{discountedTotal}</td>
+                <td>{total} zł</td>
+                <td>{discountedTotal} zł</td>
             </tr>
             <tr className={styles.dashboardCartActions}>
                 <td colSpan={100} className={styles.dashboardCartActions}>
-                    <button>View</button>
-                    <button>Delete</button>
+                    <button className={styles.viewBtn}>View</button>
+                    <button className={styles.deleteBtn}>Delete</button>
                 </td>
             </tr>
         </>
