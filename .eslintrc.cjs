@@ -35,6 +35,7 @@ module.exports = {
     "global-require": "warn",
     "implicit-arrow-linebreak": "off",
     "max-classes-per-file": "off",
+    "no-void": ["error", { "allowAsStatement": true }],
     "max-len": [
       "error",
       {
@@ -296,8 +297,8 @@ module.exports = {
     "@typescript-eslint/no-floating-promises": [
       "warn",
       {
-        ignoreVoid: false,
-        ignoreIIFE: false,
+        ignoreVoid: true,
+        ignoreIIFE: true,
       },
     ],
     "@typescript-eslint/no-for-in-array": "error",
