@@ -15,7 +15,7 @@ export const useFetch = <T>(url: string): UseFetchReturn<T> => {
         try {
             const fetchResponse = await fetch(url, { ...options });
             if (!fetchResponse.ok) { throw new Error(`Fetch response not ok`); }
-            const fetchResults = fetchResponse.json();
+            const fetchResults: unknown = await fetchResponse.json();
             setResponse(fetchResults as T);
             setIsLoading(false);
         } catch (error) {
