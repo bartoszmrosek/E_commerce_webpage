@@ -85,7 +85,16 @@ export const AddNewCartForm: React.FC<AddNewCartProps> = ({ shouldAppear, switch
                     removeProductFromForm={removeProductFromForm}
                 />
                 <button type="submit" onClick={sendFormData} disabled={newCartIsLoading}>
-                    {!newCartIsLoading ? "Confirm adding cart" : <ScaleLoader loading={true} />}
+                    {!newCartIsLoading ? (
+                        <>{
+                            !isValidError(newCartResponse) ?
+                                <>{newCartResponse === null ? "Confirm adding cart" : "Adding was successfull"}</>
+                                :
+                                "Couldn`t add cart, please retry"
+                        }
+                        </>
+                    ) :
+                        <ScaleLoader loading={true} />}
                 </button>
                 {/* Hacky way but makes the button sticky to form with relative and absolute positioning (responsivity included) */}
                 <button className={styles.hideFormBtn} type="button" onClick={switchIsFormDisplayed}>
