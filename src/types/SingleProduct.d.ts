@@ -14,5 +14,6 @@ export interface SingleProduct {
 
 export interface SingleFormProduct {
     id: number;
-    quantity: number;
+    title: string;
+    quantity: string;
 }

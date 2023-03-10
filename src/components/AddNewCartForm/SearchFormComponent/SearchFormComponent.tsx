@@ -16,8 +16,8 @@ const TableRowSubcomponent: React.FC<{
     handleNewProduct: (product: SingleFormProduct) => void;
 }> = ({ product, handleNewProduct }) => {
     const memoizedHandler = useCallback(() => {
-        handleNewProduct({ id: product.id, quantity: 1 });
-    }, [handleNewProduct, product.id]);
+        handleNewProduct({ id: product.id, quantity: 1, title: product.title });
+    }, [handleNewProduct, product.id, product.title]);
     return (
         <tr key={product.id}>
             <td>{product.title}</td>

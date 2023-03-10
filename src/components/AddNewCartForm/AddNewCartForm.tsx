@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { SingleFormProduct } from "../../types/SingleProduct";
 import styles from "./AddNewCartForm.module.css";
+import { ProductsFormComponent } from "./ProductsFormComponent/ProductsFormComponent";
 import { SearchFormComponent } from "./SearchFormComponent/SearchFormComponent";
 
 interface AddNewCartProps {
@@ -17,21 +18,45 @@ export const AddNewCartForm: React.FC<AddNewCartProps> = ({ shouldAppear, switch
             if (existingProductIndex === -1) {
                 return [...currProducts, product];
             }
+            const formatedCurrQuantity = parseInt(currProducts[existingProductIndex].quantity, 10);
             return [
                 ...currProducts.slice(0, existingProductIndex),
-                { ...product, quantity: currProducts[existingProductIndex].quantity + product.quantity },
+                {
+                    ...product,
+                    // This is to make sure that input values doesn`t make any weird side-effects since they use strings rather than numbers
+                    quantity: Number.isNaN(formatedCurrQuantity) ?
+                        "1" : (formatedCurrQuantity + parseInt(product.quantity, 10)).toString(),
+                },
                 ...currProducts.slice(existingProductIndex + 1),
             ];
         });
     }, []);
 
-    console.log(currentFormProducts);
+    const updateQuantity = useCallback((id: number, newQuantity: string) => {
+        setCurrentFormProducts(products => {
+            const productIndex = products.findIndex((prod) => prod.id === id);
+            return [
+                ...products.slice(0, productIndex),
+                { ...products[productIndex], quantity: newQuantity },
+                ...products.slice(productIndex + 1),
+            ];
+        });
+    }, []);
+
+    const removeProductFromForm = useCallback((id: number) => {
+        setCurrentFormProducts(currProducts => currProducts.filter((product) => product.id !== id));
+    }, []);
+
     return (
         <div className={`${styles.wrapper} ${shouldAppear ? styles.wrapperIsVisible : null}`}>
             <form className={styles.addNewCartForm}>
                 <h1>New cart form</h1>
                 <SearchFormComponent handleNewProduct={handleNewFormProduct} />
-                <div>Products placholder</div>
+                <ProductsFormComponent
+                    products={currentFormProducts}
+                    updateQuantity={updateQuantity}
+                    removeProductFromForm={removeProductFromForm}
+                />
                 <button type="submit">Add</button>
                 {/* Hacky way but makes the button sticky to form with relative and absolute positioning (responsivity included) */}
                 <button className={styles.hideFormBtn} type="button" onClick={switchIsFormDisplayed}>
