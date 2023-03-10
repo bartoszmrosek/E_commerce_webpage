@@ -66,7 +66,7 @@ export const Dashboard: React.FC = () => {
                             <DashboardTableExtraInfo>
                                 {isLoading ? (
                                     <>
-                                        <GridLoader loading={true} color="var(--mainBlue)" />
+                                        <GridLoader loading={true} color="var(--mainBlue)" role="progressbar" />
                                         <p>Loading data...</p>
                                     </>
                                 )

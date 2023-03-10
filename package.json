@@ -49,6 +49,7 @@
     "typescript-plugin-css-modules": "^4.2.2",
     "vite": "^4.1.0",
     "vite-plugin-eslint": "^1.8.1",
-    "vitest": "^0.28.5"
+    "vitest": "^0.28.5",
+    "vitest-fetch-mock": "^0.2.2"
   }
 }
