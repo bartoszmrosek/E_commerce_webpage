@@ -1,5 +1,6 @@
 import React, { CSSProperties, useCallback, useEffect, useState } from "react";
 import { GridLoader } from "react-spinners";
+import { v4 as uuidv4 } from "uuid";
 import { useFetch } from "../../hooks/useFetch";
 import { Cart } from "../../types/Cart";
 import { isValidError } from "../../utils/isValidError";
@@ -20,6 +21,7 @@ export const Dashboard: React.FC = () => {
     const [response, isLoading, makeRequest] = useFetch<CartsType>("https://dummyjson.com/carts/");
     const { isMobile } = useMobileMedia();
     const [shouldDisplayForm, setShoudDisplayForm] = useState(false);
+    const [displayedData, setDisplayedData] = useState<CartsType | Error | null>(null);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -31,12 +33,25 @@ export const Dashboard: React.FC = () => {
     }, [makeRequest]);
 
     const whichDisplayMode: CSSProperties = {
-        display: isValidError(response) || isLoading || (response === null || response.carts.length < 1) ? "table" : "block",
+        display: isValidError(displayedData) || isLoading || (displayedData === null || displayedData.carts.length < 1) ? "table" : "block",
     };
 
     const switchIsFormDisplayed = useCallback(() => {
         setShoudDisplayForm(prev => !prev);
     }, []);
+
+    const addNewDataToTable = useCallback((cart: Cart) => {
+        setDisplayedData(currData => {
+            if (currData !== null && !isValidError(currData)) {
+                return { ...currData, carts: [cart, ...currData.carts] };
+            }
+            return currData;
+        });
+    }, []);
+
+    useEffect(() => {
+        setDisplayedData(response);
+    }, [response]);
 
     return (
         <main className={styles.dashboardContainer}>
@@ -56,11 +71,11 @@ export const Dashboard: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody className={styles.cartsTableBody}>
-                    {!isLoading && !isValidError(response)
+                    {!isLoading && !isValidError(displayedData)
                         ? (
                             <>
-                                {response !== null && response.carts.length > 0 ?
-                                    response.carts.map((cart) => <DasboardCart cart={cart} key={cart.id} />)
+                                {displayedData !== null && displayedData.carts.length > 0 ?
+                                    displayedData.carts.map((cart) => <DasboardCart cart={cart} key={`${uuidv4()}`} />)
                                     : (
                                         <DashboardTableExtraInfo>
                                             No carts can be found! Add some!
@@ -88,7 +103,11 @@ export const Dashboard: React.FC = () => {
                 </tbody>
             </table>
             <button className={styles.newCartBtn} onClick={switchIsFormDisplayed}>Add new cart</button>
-            <AddNewCartForm shouldAppear={shouldDisplayForm} switchIsFormDisplayed={switchIsFormDisplayed} />
+            <AddNewCartForm
+                shouldAppear={shouldDisplayForm}
+                switchIsFormDisplayed={switchIsFormDisplayed}
+                addNewDataToTable={addNewDataToTable}
+            />
         </main>
     );
 };

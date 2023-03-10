@@ -16,7 +16,7 @@ const TableRowSubcomponent: React.FC<{
     handleNewProduct: (product: SingleFormProduct) => void;
 }> = ({ product, handleNewProduct }) => {
     const memoizedHandler = useCallback(() => {
-        handleNewProduct({ id: product.id, quantity: 1, title: product.title });
+        handleNewProduct({ id: product.id, quantity: "1", title: product.title });
     }, [handleNewProduct, product.id, product.title]);
     return (
         <tr key={product.id}>
@@ -38,9 +38,11 @@ export const SearchFormComponent: React.FC<SearchFormComponentProps> = ({ handle
     }, []);
 
     useEffect(() => {
+        const controller = new AbortController();
         if (debouncedSearchValue.trim().length > 1) {
-            void makeSearchRequest();
+            void makeSearchRequest({ signal: controller.signal });
         }
+        return () => controller.abort();
     }, [debouncedSearchValue, makeSearchRequest]);
 
     return (

@@ -1,16 +1,22 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { ScaleLoader } from "react-spinners";
+import { useFetch } from "../../hooks/useFetch";
 import { SingleFormProduct } from "../../types/SingleProduct";
 import styles from "./AddNewCartForm.module.css";
 import { ProductsFormComponent } from "./ProductsFormComponent/ProductsFormComponent";
 import { SearchFormComponent } from "./SearchFormComponent/SearchFormComponent";
+import { Cart } from "../../types/Cart";
+import { isValidError } from "../../utils/isValidError";
 
 interface AddNewCartProps {
     shouldAppear: boolean;
     switchIsFormDisplayed: () => void;
+    addNewDataToTable: (cart: Cart) => void;
 }
 
-export const AddNewCartForm: React.FC<AddNewCartProps> = ({ shouldAppear, switchIsFormDisplayed }) => {
+export const AddNewCartForm: React.FC<AddNewCartProps> = ({ shouldAppear, switchIsFormDisplayed, addNewDataToTable }) => {
     const [currentFormProducts, setCurrentFormProducts] = useState<SingleFormProduct[]>([]);
+    const [newCartResponse, newCartIsLoading, makeRequest] = useFetch<Cart>("https://dummyjson.com/carts/add");
 
     const handleNewFormProduct = useCallback((product: SingleFormProduct) => {
         setCurrentFormProducts((currProducts) => {
@@ -47,6 +53,27 @@ export const AddNewCartForm: React.FC<AddNewCartProps> = ({ shouldAppear, switch
         setCurrentFormProducts(currProducts => currProducts.filter((product) => product.id !== id));
     }, []);
 
+    const sendFormData = useCallback((e: React.FormEvent) => {
+        e.preventDefault();
+        const requestOptions = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                userId: 1,
+                products: currentFormProducts.map((products) => (
+                    { ...products, quantity: products.quantity === "" ? 0 : parseInt(products.quantity, 10) }
+                )),
+            }),
+        };
+        void makeRequest(requestOptions);
+    }, [currentFormProducts, makeRequest]);
+
+    useEffect(() => {
+        if (newCartResponse !== null && !isValidError(newCartResponse)) {
+            addNewDataToTable(newCartResponse);
+        }
+    }, [addNewDataToTable, newCartResponse]);
+
     return (
         <div className={`${styles.wrapper} ${shouldAppear ? styles.wrapperIsVisible : null}`}>
             <form className={styles.addNewCartForm}>
@@ -57,7 +84,9 @@ export const AddNewCartForm: React.FC<AddNewCartProps> = ({ shouldAppear, switch
                     updateQuantity={updateQuantity}
                     removeProductFromForm={removeProductFromForm}
                 />
-                <button type="submit">Add</button>
+                <button type="submit" onClick={sendFormData} disabled={newCartIsLoading}>
+                    {!newCartIsLoading ? "Confirm adding cart" : <ScaleLoader loading={true} />}
+                </button>
                 {/* Hacky way but makes the button sticky to form with relative and absolute positioning (responsivity included) */}
                 <button className={styles.hideFormBtn} type="button" onClick={switchIsFormDisplayed}>
                     <svg
