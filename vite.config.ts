@@ -8,6 +8,11 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
+    css: {
+      modules: {
+        classNameStrategy: "non-scoped"
+      }
+    },
     setupFiles: "./testUtils/setup.ts",
   },
   base: "/"

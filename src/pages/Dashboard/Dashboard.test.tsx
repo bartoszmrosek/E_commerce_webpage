@@ -47,7 +47,7 @@ describe("Dashboard", () => {
             const retryBtn = await findByRole("button", { name: "Retry" });
             expect(retryBtn).toBeInTheDocument();
             fireEvent.click(retryBtn);
-            // It is actually 2 but Stric mode makes it double
+            // It is actually 2 but React stric mode makes it double
             expect(fetchMock).toBeCalledTimes(4);
         });
 
@@ -75,5 +75,12 @@ describe("Dashboard", () => {
             const { findByText } = render(<Dashboard />);
             expect(await findByText("No carts can be found! Add some!")).toBeInTheDocument();
         });
+    });
+    it("checks if button opens form", () => {
+        const { getByRole } = render(<Dashboard />);
+        fireEvent.click(getByRole("button", { name: "Add new cart" }));
+        const formHeader = getByRole("heading", { name: "New cart form" });
+        expect(formHeader).toBeInTheDocument();
+        expect(formHeader.parentElement?.parentElement).toHaveClass("wrapperIsVisible");
     });
 });

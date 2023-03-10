@@ -1,12 +1,13 @@
-import React, { CSSProperties, useCallback, useEffect } from "react";
+import React, { CSSProperties, useCallback, useEffect, useState } from "react";
 import { GridLoader } from "react-spinners";
 import { useFetch } from "../../hooks/useFetch";
 import { Cart } from "../../types/Cart";
 import { isValidError } from "../../utils/isValidError";
-import { DashboardTableExtraInfo } from "../../components/DasboardTableExtraInfo/DasboardTableExtraInfo";
+import { DashboardTableExtraInfo } from "./DasboardTableExtraInfo/DasboardTableExtraInfo";
 import styles from "./Dashboard.module.css";
 import { DasboardCart } from "../../components/DashboardCart/DashboardCart";
 import { useMobileMedia } from "../../hooks/useMobileMedia";
+import { AddNewCartForm } from "../../components/AddNewCartForm/AddNewCartForm";
 
 interface CartsType {
     carts: Cart[];
@@ -16,8 +17,10 @@ interface CartsType {
 }
 
 export const Dashboard: React.FC = () => {
-    const { response, isLoading, makeRequest } = useFetch<CartsType>("https://dummyjson.com/carts/");
+    const [response, isLoading, makeRequest] = useFetch<CartsType>("https://dummyjson.com/carts/");
     const { isMobile } = useMobileMedia();
+    const [shouldDisplayForm, setShoudDisplayForm] = useState(false);
+
     useEffect(() => {
         const controller = new AbortController();
         void makeRequest({ signal: controller.signal });
@@ -30,6 +33,10 @@ export const Dashboard: React.FC = () => {
     const whichDisplayMode: CSSProperties = {
         display: isValidError(response) || isLoading || (response === null || response.carts.length < 1) ? "table" : "block",
     };
+
+    const switchIsFormDisplayed = useCallback(() => {
+        setShoudDisplayForm(prev => !prev);
+    }, []);
 
     return (
         <main className={styles.dashboardContainer}>
@@ -80,7 +87,8 @@ export const Dashboard: React.FC = () => {
                         )}
                 </tbody>
             </table>
-            <button className={styles.newCartBtn}>Add new cart</button>
+            <button className={styles.newCartBtn} onClick={switchIsFormDisplayed}>Add new cart</button>
+            <AddNewCartForm shouldAppear={shouldDisplayForm} switchIsFormDisplayed={switchIsFormDisplayed} />
         </main>
     );
 };

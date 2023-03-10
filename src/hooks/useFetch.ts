@@ -1,15 +1,11 @@
 import { useCallback, useState } from "react";
 import { isValidError } from "../utils/isValidError";
 
-interface UseFetchReturn<U> {
-    response: U | Error | null;
-    isLoading: boolean;
-    makeRequest: (options?: RequestInit) => Promise<void>;
-}
+type UseFetchReturn<U> = readonly [U | Error | null, boolean, (options?: RequestInit) => Promise<void>];
 
 export const useFetch = <T>(url: string): UseFetchReturn<T> => {
     const [response, setResponse] = useState<T | Error | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const makeRequest = useCallback(async (options?: RequestInit) => {
         setIsLoading(true);
         try {
@@ -29,5 +25,5 @@ export const useFetch = <T>(url: string): UseFetchReturn<T> => {
         }
     }, [url]);
 
-    return { response, isLoading, makeRequest };
+    return [response, isLoading, makeRequest] as const;
 };
