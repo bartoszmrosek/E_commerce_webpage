@@ -1,10 +1,11 @@
-import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
+import React, { ChangeEvent, KeyboardEvent, useCallback, useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
 import { useDebounce } from "../../../hooks/useDebounce";
 import { useFetch } from "../../../hooks/useFetch";
 import { CartProduct } from "../../../types/CartProduct";
 import { SingleFormProduct } from "../../../types/SingleProduct";
 import { isValidError } from "../../../utils/isValidError";
+import styles from "./SearchFormComponent.module.css";
 
 interface SearchFormComponentProps {
     handleNewProduct: (product: SingleFormProduct) => void;
@@ -19,9 +20,9 @@ const TableRowSubcomponent: React.FC<{
         handleNewProduct({ id: product.id, quantity: "1", title: product.title });
     }, [handleNewProduct, product.id, product.title]);
     return (
-        <tr key={product.id}>
+        <tr key={product.id} className={styles.searchTableRow}>
             <td>{product.title}</td>
-            <td><button onClick={memoizedHandler} type="button">Add product</button></td>
+            <td><button onClick={memoizedHandler} type="button" className={styles.addBtn}>Add product</button></td>
         </tr>
     );
 };
@@ -45,26 +46,47 @@ export const SearchFormComponent: React.FC<SearchFormComponentProps> = ({ handle
         return () => controller.abort();
     }, [debouncedSearchValue, makeSearchRequest]);
 
+    // Just to make sure any accidential enter wouldn`t trigger whole form submit.
+    const preventFormSubmit = useCallback((e: KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && e.preventDefault(), []);
+
     return (
-        <>
-            <input type="search" value={searchValue} onChange={handleSearchUpdate} />
-            <table>
-                <tbody>
-                    {!isSearching ? (
-                        <>
-                            {!isValidError(searchResponse) && (searchResponse && searchResponse.products.length > 0) ? (
-                                <>
-                                    {searchResponse.products.map((product) => (
-                                        <TableRowSubcomponent key={product.id} product={product} handleNewProduct={handleNewProduct} />
-                                    ))}
-                                </>
-                            ) : (
-                                <tr><td colSpan={100}>{searchResponse === null ? "Start searching" : "Couldn`t find any data"}</td></tr>
-                            )}
-                        </>
-                    ) : <tr><td><BeatLoader loading={true} /></td></tr>}
-                </tbody>
-            </table>
-        </>
+        <div className={styles.searchWrapper}>
+            <input
+                type="search"
+                value={searchValue}
+                onChange={handleSearchUpdate}
+                className={styles.searchInput}
+                placeholder="Start searching for products..."
+                onKeyDown={preventFormSubmit}
+            />
+            <div className={styles.searchTableWrapper}>
+                <table className={styles.searchTable}>
+                    <tbody>
+                        {!isSearching ? (
+                            <>
+                                {!isValidError(searchResponse) && (searchResponse && searchResponse.products.length > 0) ? (
+                                    <>
+                                        {searchResponse.products.map((product) => (
+                                            <TableRowSubcomponent key={product.id} product={product} handleNewProduct={handleNewProduct} />
+                                        ))}
+                                    </>
+                                ) : (
+                                    <tr><td colSpan={100}>{searchResponse === null ? "Start searching" : "Couldn`t find any data"}</td></tr>
+                                )}
+                            </>
+                        ) : (
+                            <tr>
+                                <td className={styles.loaderWrapper}>
+                                    <BeatLoader
+                                        loading={true}
+                                        color="var(--mainBlue)"
+                                    />
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     );
 };

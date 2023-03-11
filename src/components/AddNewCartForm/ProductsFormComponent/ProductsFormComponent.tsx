@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useCallback } from "react";
 import { SingleFormProduct } from "../../../types/SingleProduct";
+import styles from "./ProductsFormComponent.module.css";
 
 interface ProductsFormComponentProps {
     products: SingleFormProduct[];
@@ -21,30 +22,41 @@ const ProductRowSubcomponent: React.FC<{
     }, [product.id, removeProductFromForm]);
 
     return (
-        <tr key={product.id}>
+        <tr key={product.id} className={styles.productRow}>
             <td>{product.title}</td>
-            <td><input value={product.quantity} onChange={inputHandler} type="number" /></td>
-            <td><button type="button" onClick={btnHandler}>Delete</button></td>
+            <td><input
+                value={product.quantity}
+                onChange={inputHandler}
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                className={styles.quantityInput}
+            />
+            </td>
+            <td><button type="button" onClick={btnHandler} className={styles.removeBtn}>Remove</button></td>
         </tr>
     );
 };
 
 export const ProductsFormComponent: React.FC<ProductsFormComponentProps> = ({ products, updateQuantity, removeProductFromForm }) => {
     return (
-        <table>
-            <thead>
-                <tr><th>Product</th><th>Quantity</th></tr>
-            </thead>
-            <tbody>
-                {products.length > 0 ? products.map((product) => (
-                    <ProductRowSubcomponent
-                        key={product.id}
-                        product={product}
-                        updateQuanity={updateQuantity}
-                        removeProductFromForm={removeProductFromForm}
-                    />
-                )) : <tr><td colSpan={100}>No products found yet</td></tr>}
-            </tbody>
-        </table>
+        <div className={styles.tableWrapper}>
+            <table className={styles.productsTable}>
+                <thead className={styles.productsHeader}>
+                    <tr><th colSpan={100}><h2>Current cart products</h2></th></tr>
+                    <tr><th>Product</th><th>Quantity</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                    {products.length > 0 ? products.map((product) => (
+                        <ProductRowSubcomponent
+                            key={product.id}
+                            product={product}
+                            updateQuanity={updateQuantity}
+                            removeProductFromForm={removeProductFromForm}
+                        />
+                    )) : <tr><td colSpan={100}>No products added yet</td></tr>}
+                </tbody>
+            </table>
+        </div>
     );
 };

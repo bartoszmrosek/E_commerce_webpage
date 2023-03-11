@@ -1,0 +1,82 @@
+.tableWrapper {
+    overflow: auto;
+    flex-grow: 1;
+    max-height: 50%;
+    height: 100%;
+    width: 100%;
+    border: 1px solid var(--navyBlue);
+    padding: 0 0.5rem 0.5rem;
+}
+
+.productsTable {
+    text-align: center;
+    display: table;
+    overflow: auto;
+    border-collapse: collapse;
+    width: 100%;
+    height: 100%;
+}
+
+.productsHeader,
+.productsHeader>tr>td {
+    position: sticky;
+    top: 1px;
+    color: var(--navyBlue);
+}
+
+.productsHeader {
+    background-color: var(--milky);
+    opacity: 0.95;
+    z-index: 1;
+}
+
+.productRow {
+    height: 4rem;
+    width: 100%;
+}
+
+.productRow+.productRow {
+    border-top: 1px solid var(--mainBlue);
+}
+
+.quantityInput {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    text-align: center;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    margin: 0;
+    border: 0;
+    background-color: var(--paleBlue);
+    color: var(--navyBlue);
+    outline: 0;
+}
+
+.quantityInput:hover {
+    border: 2px solid var(--mainBlue);
+}
+
+.quantityInput:focus-within {
+    font-weight: bold;
+    border: 2px solid rgba(0, 0, 0, 0.4);
+}
+
+.removeBtn {
+    padding: 0.5rem 0.75rem;
+    margin: 0.25rem;
+    border-radius: 10rem;
+    border: 0;
+    background-color: var(--accentingRed);
+    color: var(--milky);
+    cursor: pointer;
+}
+
+.removeBtn:hover {
+    filter: brightness(0.9);
+}
+
+.removeBtn:active {
+    transform: scale(0.95);
+}
