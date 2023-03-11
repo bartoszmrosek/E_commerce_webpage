@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useCallback } from "react";
 import { SingleFormProduct } from "../../../types/SingleProduct";
+import { preventFormSubmit } from "../../../utils/preventSubmit";
 import styles from "./ProductsFormComponent.module.css";
 
 interface ProductsFormComponentProps {
@@ -31,6 +32,7 @@ const ProductRowSubcomponent: React.FC<{
                 inputMode="numeric"
                 pattern="[0-9]*"
                 className={styles.quantityInput}
+                onKeyDown={preventFormSubmit}
             />
             </td>
             <td><button type="button" onClick={btnHandler} className={styles.removeBtn}>Remove</button></td>

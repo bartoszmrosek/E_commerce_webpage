@@ -1,4 +1,4 @@
-import React, { ChangeEvent, KeyboardEvent, useCallback, useEffect, useState } from "react";
+import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
 import { useDebounce } from "../../../hooks/useDebounce";
 import { useFetch } from "../../../hooks/useFetch";
@@ -6,6 +6,7 @@ import { CartProduct } from "../../../types/CartProduct";
 import { SingleFormProduct } from "../../../types/SingleProduct";
 import { isValidError } from "../../../utils/isValidError";
 import styles from "./SearchFormComponent.module.css";
+import { preventFormSubmit } from "../../../utils/preventSubmit";
 
 interface SearchFormComponentProps {
     handleNewProduct: (product: SingleFormProduct) => void;
@@ -45,10 +46,6 @@ export const SearchFormComponent: React.FC<SearchFormComponentProps> = ({ handle
         }
         return () => controller.abort();
     }, [debouncedSearchValue, makeSearchRequest]);
-
-    // Just to make sure any accidential enter wouldn`t trigger whole form submit.
-    const preventFormSubmit = useCallback((e: KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && e.preventDefault(), []);
-
     return (
         <div className={styles.searchWrapper}>
             <input
