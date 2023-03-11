@@ -86,6 +86,7 @@
 @media only screen and (max-width: 720px) {
     .addNewCartForm {
         width: 100%;
+        margin: 0;
     }
 
     .hideFormBtn {
