@@ -79,8 +79,29 @@ describe("Dashboard", () => {
     it("checks if button opens form", () => {
         const { getByRole } = render(<Dashboard />);
         fireEvent.click(getByRole("button", { name: "Add new cart" }));
-        const formHeader = getByRole("heading", { name: "New cart form" });
+        const formHeader = getByRole("heading", { name: "New cart" });
         expect(formHeader).toBeInTheDocument();
         expect(formHeader.parentElement?.parentElement).toHaveClass("wrapperIsVisible");
+    });
+    it("checks if new cart can be added after form submit", async () => {
+        const mockedAddingRes = {
+            discountedTotal: 300,
+            id: 26,
+            products: [],
+            total: 360,
+            totalProducts: 1,
+            totalQuantity: 6,
+        };
+
+        fetchMock.mockResponseOnce(JSON.stringify(mockResponseObj));
+        const { getByRole, findByRole } = render(<Dashboard />);
+        fireEvent.click(getByRole("button", { name: "Add new cart" }));
+        fetchMock.mockResponseOnce(JSON.stringify(mockedAddingRes));
+        fireEvent.click(await findByRole("button", { name: "Confirm adding cart" }));
+        expect(await findByRole("cell", { name: "26" })).toBeInTheDocument();
+        expect(await findByRole("cell", { name: "1 pieces" })).toBeInTheDocument();
+        expect(await findByRole("cell", { name: "6 pieces" })).toBeInTheDocument();
+        expect(await findByRole("cell", { name: "360 €" })).toBeInTheDocument();
+        expect(await findByRole("cell", { name: "300 €" })).toBeInTheDocument();
     });
 });
