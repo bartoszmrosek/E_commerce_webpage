@@ -107,7 +107,12 @@ export const AddNewCartForm: React.FC<AddNewCartProps> = ({ shouldAppear, switch
                     )}
                 </button>
                 {/* Hacky way but makes the button sticky to form with relative and absolute positioning (responsivity included) */}
-                <button className={styles.hideFormBtn} type="button" onClick={switchIsFormDisplayed}>
+                <button
+                    className={styles.hideFormBtn}
+                    type="button"
+                    onClick={switchIsFormDisplayed}
+                    aria-label="close"
+                >
                     <svg
                         height="512px"
                         version="1.1"

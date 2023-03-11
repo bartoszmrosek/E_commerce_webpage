@@ -8,6 +8,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
+    mockReset: true,
     css: {
       modules: {
         classNameStrategy: "non-scoped"

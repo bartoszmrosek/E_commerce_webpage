@@ -5,9 +5,6 @@ import React from "react";
 import { fireEvent, render } from "@testing-library/react";
 import { Dashboard } from "./Dashboard";
 
-const fetchMock = createFetchMock(vi);
-fetchMock.enableMocks();
-
 const mockResponseObj = {
     carts: [{ discountedTotal: 1900, id: 1, products: [], total: 2300, totalProducts: 3, totalQuantity: 5 }],
     total: 20,
@@ -41,17 +38,20 @@ describe("Dashboard", () => {
     });
     describe("updates ui based on fetch state", () => {
         it("displays error component on failed fetch and fires retry after click", async () => {
+            const fetchMock = createFetchMock(vi);
+            fetchMock.enableMocks();
             fetchMock.mockRejectOnce(new Error("error"));
             const { findByRole, findByText } = render(<Dashboard />);
             expect(await findByText("Loading data failed")).toBeInTheDocument();
             const retryBtn = await findByRole("button", { name: "Retry" });
             expect(retryBtn).toBeInTheDocument();
             fireEvent.click(retryBtn);
-            // It is actually 2 but React stric mode makes it double
-            expect(fetchMock).toBeCalledTimes(4);
+            expect(fetchMock).toBeCalledTimes(2);
         });
 
         it("displays loading component if not fetched yet", () => {
+            const fetchMock = createFetchMock(vi);
+            fetchMock.enableMocks();
             fetchMock.mockResponse(() => "a");
             const { getByRole, getByText } = render(<Dashboard />);
             expect(getByRole("progressbar")).toBeInTheDocument();
@@ -59,6 +59,8 @@ describe("Dashboard", () => {
         });
 
         it("displays proper table data after succesfull fetch", async () => {
+            const fetchMock = createFetchMock(vi);
+            fetchMock.enableMocks();
             fetchMock.mockResponseOnce(JSON.stringify(mockResponseObj));
             const { findByRole } = render(<Dashboard />);
             expect(await findByRole("cell", { name: "1" })).toBeInTheDocument();
@@ -71,6 +73,8 @@ describe("Dashboard", () => {
         });
 
         it("displays additional info if no data was found on server", async () => {
+            const fetchMock = createFetchMock(vi);
+            fetchMock.enableMocks();
             fetchMock.mockResponseOnce(JSON.stringify({ ...mockResponseObj, carts: [] }));
             const { findByText } = render(<Dashboard />);
             expect(await findByText("No carts can be found! Add some!")).toBeInTheDocument();
@@ -92,6 +96,9 @@ describe("Dashboard", () => {
             totalProducts: 1,
             totalQuantity: 6,
         };
+
+        const fetchMock = createFetchMock(vi);
+        fetchMock.enableMocks();
 
         fetchMock.mockResponseOnce(JSON.stringify(mockResponseObj));
         const { getByRole, findByRole } = render(<Dashboard />);

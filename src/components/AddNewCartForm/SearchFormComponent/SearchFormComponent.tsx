@@ -80,6 +80,7 @@ export const SearchFormComponent: React.FC<SearchFormComponentProps> = ({ handle
                                     <BeatLoader
                                         loading={true}
                                         color="var(--mainBlue)"
+                                        role="progressbar"
                                     />
                                 </td>
                             </tr>
