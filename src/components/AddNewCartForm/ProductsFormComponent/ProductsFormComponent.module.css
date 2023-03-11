@@ -20,13 +20,13 @@
 .productsHeader,
 .productsHeader>tr>td {
     position: sticky;
-    top: 1px;
+    top: 0;
     color: var(--navyBlue);
 }
 
 .productsHeader {
     background-color: var(--milky);
-    opacity: 0.95;
+    opacity: 0.97;
     z-index: 1;
 }
 
