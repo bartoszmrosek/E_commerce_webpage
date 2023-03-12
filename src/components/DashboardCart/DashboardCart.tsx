@@ -1,15 +1,32 @@
-import React, { memo } from "react";
+import React, { memo, useCallback, useEffect } from "react";
+import { BeatLoader } from "react-spinners";
 import styles from "./DasboardCart.module.css";
 import { Cart } from "../../types/Cart";
 import { useMobileMedia } from "../../hooks/useMobileMedia";
+import { useFetch } from "../../hooks/useFetch";
+import { isValidError } from "../../utils/isValidError";
 
 interface DasboardCartProps {
     cart: Cart;
+    handleCartRemove: (id: number) => void;
 }
 
-export const DasboardCart: React.FC<DasboardCartProps> = memo(function DasboardCart({ cart }) {
+export const DasboardCart: React.FC<DasboardCartProps> = memo(function DasboardCart({ cart, handleCartRemove }) {
     const { id, total, totalProducts, totalQuantity, discountedTotal } = cart;
     const { isMobile } = useMobileMedia();
+    const [deleteStatus, isLoading, makeDeleteRequest] = useFetch<{ id: number; isDeleted: boolean; }>(`https://dummyjson.com/carts/${cart.id}`);
+
+    const handleDeleteBtn = useCallback(() => {
+        void makeDeleteRequest({
+            method: "DELETE",
+        });
+    }, [makeDeleteRequest]);
+
+    useEffect(() => {
+        if (deleteStatus !== null && !isValidError(deleteStatus) && deleteStatus.isDeleted) {
+            handleCartRemove(deleteStatus.id);
+        }
+    }, [deleteStatus, handleCartRemove]);
     return (
         <>
             <tr className={styles.dashboardCartRow}>
@@ -26,7 +43,13 @@ export const DasboardCart: React.FC<DasboardCartProps> = memo(function DasboardC
             <tr className={styles.dashboardCartActions}>
                 <td colSpan={100} className={styles.dashboardCartActions}>
                     <button className={styles.viewBtn}>View</button>
-                    <button className={styles.deleteBtn}>Delete</button>
+                    <button className={styles.deleteBtn} onClick={handleDeleteBtn} disabled={isLoading}>
+                        {!isLoading ? (
+                            <>
+                                {!isValidError(deleteStatus) ? "Delete" : "Couldn`t delete"}
+                            </>
+                        ) : <BeatLoader loading={true} color="var(--milky)" size={10} role="progressbar" />}
+                    </button>
                 </td>
             </tr>
         </>

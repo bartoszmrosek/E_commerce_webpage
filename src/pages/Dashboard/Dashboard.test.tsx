@@ -2,7 +2,7 @@ import createFetchMock from "vitest-fetch-mock";
 import { vi } from "vitest";
 
 import React from "react";
-import { fireEvent, render } from "@testing-library/react";
+import { act, fireEvent, render, waitFor } from "@testing-library/react";
 import { Dashboard } from "./Dashboard";
 
 const mockResponseObj = {
@@ -110,5 +110,20 @@ describe("Dashboard", () => {
         expect(await findByRole("cell", { name: "6 pieces" })).toBeInTheDocument();
         expect(await findByRole("cell", { name: "360 €" })).toBeInTheDocument();
         expect(await findByRole("cell", { name: "300 €" })).toBeInTheDocument();
+    });
+    it("delets cart from dashboard on cart btn click", async () => {
+        const fetchMock = createFetchMock(vi);
+        fetchMock.enableMocks();
+        fetchMock
+            .mockResponseOnce(JSON.stringify(mockResponseObj))
+            .mockResponseOnce(JSON.stringify({ id: mockResponseObj.carts[0].id, isDeleted: true }));
+        const { findByRole } = render(<Dashboard />);
+        const cart = await findByRole("cell", { name: `${mockResponseObj.carts[0].id}` });
+        await act(async () => {
+            fireEvent.click(await findByRole("button", { name: "Delete" }));
+        });
+        await waitFor(() => {
+            expect(cart).not.toBeInTheDocument();
+        });
     });
 });

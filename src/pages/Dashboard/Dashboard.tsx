@@ -28,6 +28,7 @@ export const Dashboard: React.FC = () => {
         void makeRequest({ signal: controller.signal });
         return () => controller.abort();
     }, [makeRequest]);
+
     const retryFetch = useCallback(() => {
         void makeRequest();
     }, [makeRequest]);
@@ -53,6 +54,15 @@ export const Dashboard: React.FC = () => {
         setDisplayedData(response);
     }, [response]);
 
+    const handleCartRemove = useCallback((id: number) => {
+        setDisplayedData(currData => {
+            if (currData !== null && !isValidError(currData)) {
+                return { ...currData, carts: currData.carts.filter(cart => cart.id !== id) };
+            }
+            return currData;
+        });
+    }, []);
+
     return (
         <main className={styles.dashboardContainer}>
             <h1 className={styles.cartsHeader}>All carts</h1>
@@ -75,7 +85,13 @@ export const Dashboard: React.FC = () => {
                         ? (
                             <>
                                 {displayedData !== null && displayedData.carts.length > 0 ?
-                                    displayedData.carts.map((cart) => <DasboardCart cart={cart} key={`${uuidv4()}`} />)
+                                    displayedData.carts.map((cart) => (
+                                        <DasboardCart
+                                            cart={cart}
+                                            key={`${uuidv4()}`}
+                                            handleCartRemove={handleCartRemove}
+                                        />
+                                    ))
                                     : (
                                         <DashboardTableExtraInfo>
                                             No carts can be found! Add some!
