@@ -71,5 +71,6 @@ describe("DasboardCart", () => {
     it("redirects to proper route on view btn click", () => {
         const { getByRole } = renderWithRouter(<DasboardCart cart={testingCart} handleCartRemove={defaulMock} />);
         fireEvent.click(getByRole("button", { name: "View" }));
+        expect(global.location.pathname).toBe(`/dashboard/cart/${testingCart.id}`);
     });
 });
