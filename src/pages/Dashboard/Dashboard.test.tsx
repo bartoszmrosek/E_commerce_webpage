@@ -2,8 +2,9 @@ import createFetchMock from "vitest-fetch-mock";
 import { vi } from "vitest";
 
 import React from "react";
-import { act, fireEvent, render, waitFor } from "@testing-library/react";
+import { act, fireEvent, waitFor } from "@testing-library/react";
 import { Dashboard } from "./Dashboard";
+import { renderWithRouter } from "../../../testUtils/renderWithRouter";
 
 const mockResponseObj = {
     carts: [{ discountedTotal: 1900, id: 1, products: [], total: 2300, totalProducts: 3, totalQuantity: 5 }],
@@ -19,7 +20,7 @@ describe("Dashboard", () => {
             fireEvent.resize(window);
         });
         it("renders not async data on desktop", () => {
-            const { getByText, getByRole } = render(<Dashboard />);
+            const { getByText, getByRole } = renderWithRouter(<Dashboard />);
             expect(getByText("All carts")).toBeInTheDocument();
             expect(getByRole("columnheader", { name: "Cart id" })).toBeInTheDocument();
             expect(getByRole("columnheader", { name: "Total products" })).toBeInTheDocument();
@@ -29,7 +30,7 @@ describe("Dashboard", () => {
             expect(getByRole("button", { name: "Add new cart" })).toBeInTheDocument();
         });
         it("renders not async data on mobile", () => {
-            const { queryByRole } = render(<Dashboard />);
+            const { queryByRole } = renderWithRouter(<Dashboard />);
             window.innerWidth = 500;
             fireEvent.resize(window);
             expect(queryByRole("columnheader", { name: "Total products" })).toBeNull();
@@ -41,7 +42,7 @@ describe("Dashboard", () => {
             const fetchMock = createFetchMock(vi);
             fetchMock.enableMocks();
             fetchMock.mockRejectOnce(new Error("error"));
-            const { findByRole, findByText } = render(<Dashboard />);
+            const { findByRole, findByText } = renderWithRouter(<Dashboard />);
             expect(await findByText("Loading data failed")).toBeInTheDocument();
             const retryBtn = await findByRole("button", { name: "Retry" });
             expect(retryBtn).toBeInTheDocument();
@@ -53,7 +54,7 @@ describe("Dashboard", () => {
             const fetchMock = createFetchMock(vi);
             fetchMock.enableMocks();
             fetchMock.mockResponse(() => "a");
-            const { getByRole, getByText } = render(<Dashboard />);
+            const { getByRole, getByText } = renderWithRouter(<Dashboard />);
             expect(getByRole("progressbar")).toBeInTheDocument();
             expect(getByText("Loading data...")).toBeInTheDocument();
         });
@@ -62,7 +63,7 @@ describe("Dashboard", () => {
             const fetchMock = createFetchMock(vi);
             fetchMock.enableMocks();
             fetchMock.mockResponseOnce(JSON.stringify(mockResponseObj));
-            const { findByRole } = render(<Dashboard />);
+            const { findByRole } = renderWithRouter(<Dashboard />);
             expect(await findByRole("cell", { name: "1" })).toBeInTheDocument();
             expect(await findByRole("cell", { name: "1900 €" })).toBeInTheDocument();
             expect(await findByRole("cell", { name: "2300 €" })).toBeInTheDocument();
@@ -76,12 +77,12 @@ describe("Dashboard", () => {
             const fetchMock = createFetchMock(vi);
             fetchMock.enableMocks();
             fetchMock.mockResponseOnce(JSON.stringify({ ...mockResponseObj, carts: [] }));
-            const { findByText } = render(<Dashboard />);
+            const { findByText } = renderWithRouter(<Dashboard />);
             expect(await findByText("No carts can be found! Add some!")).toBeInTheDocument();
         });
     });
     it("checks if button opens form", () => {
-        const { getByRole } = render(<Dashboard />);
+        const { getByRole } = renderWithRouter(<Dashboard />);
         fireEvent.click(getByRole("button", { name: "Add new cart" }));
         const formHeader = getByRole("heading", { name: "New cart" });
         expect(formHeader).toBeInTheDocument();
@@ -101,7 +102,7 @@ describe("Dashboard", () => {
         fetchMock.enableMocks();
 
         fetchMock.mockResponseOnce(JSON.stringify(mockResponseObj));
-        const { getByRole, findByRole } = render(<Dashboard />);
+        const { getByRole, findByRole } = renderWithRouter(<Dashboard />);
         fireEvent.click(getByRole("button", { name: "Add new cart" }));
         fetchMock.mockResponseOnce(JSON.stringify(mockedAddingRes));
         fireEvent.click(await findByRole("button", { name: "Confirm adding cart" }));
@@ -117,7 +118,7 @@ describe("Dashboard", () => {
         fetchMock
             .mockResponseOnce(JSON.stringify(mockResponseObj))
             .mockResponseOnce(JSON.stringify({ id: mockResponseObj.carts[0].id, isDeleted: true }));
-        const { findByRole } = render(<Dashboard />);
+        const { findByRole } = renderWithRouter(<Dashboard />);
         const cart = await findByRole("cell", { name: `${mockResponseObj.carts[0].id}` });
         await act(async () => {
             fireEvent.click(await findByRole("button", { name: "Delete" }));

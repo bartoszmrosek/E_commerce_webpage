@@ -1,9 +1,10 @@
 import React from "react";
-import { act, fireEvent, render, waitFor } from "@testing-library/react";
+import { act, fireEvent, waitFor } from "@testing-library/react";
 import { vi } from "vitest";
 import createFetchMock from "vitest-fetch-mock";
 import { Cart } from "../../types/Cart";
 import { DasboardCart } from "./DashboardCart";
+import { renderWithRouter } from "../../../testUtils/renderWithRouter";
 
 const testingCart: Cart = {
     id: 1,
@@ -17,7 +18,7 @@ const testingCart: Cart = {
 const defaulMock = vi.fn();
 describe("DasboardCart", () => {
     it("is rendered with proper cart values", () => {
-        const { getByText } = render(<DasboardCart cart={testingCart} handleCartRemove={defaulMock} />);
+        const { getByText } = renderWithRouter(<DasboardCart cart={testingCart} handleCartRemove={defaulMock} />);
         expect(getByText("1")).toBeInTheDocument();
         expect(getByText("3 pieces")).toBeInTheDocument();
         expect(getByText("6 pieces")).toBeInTheDocument();
@@ -25,7 +26,7 @@ describe("DasboardCart", () => {
         expect(getByText("90 €")).toBeInTheDocument();
     });
     it("is not rendering products and quantity on mobile", () => {
-        const { queryByText } = render(<DasboardCart cart={testingCart} handleCartRemove={defaulMock} />);
+        const { queryByText } = renderWithRouter(<DasboardCart cart={testingCart} handleCartRemove={defaulMock} />);
         window.innerWidth = 500;
         fireEvent.resize(window);
         expect(queryByText("3 pieces")).toBeNull();
@@ -36,7 +37,7 @@ describe("DasboardCart", () => {
             const fetchMock = createFetchMock(vi);
             fetchMock.enableMocks();
             fetchMock.mockResponseOnce(JSON.stringify({}));
-            const { getByRole } = render(<DasboardCart cart={testingCart} handleCartRemove={defaulMock} />);
+            const { getByRole } = renderWithRouter(<DasboardCart cart={testingCart} handleCartRemove={defaulMock} />);
             fireEvent.click(getByRole("button", { name: "Delete" }));
             expect(getByRole("progressbar")).toBeInTheDocument();
         });
@@ -45,7 +46,7 @@ describe("DasboardCart", () => {
             fetchMock.enableMocks();
             fetchMock.mockRejectOnce(new Error());
             const handleRemoveMock = vi.fn();
-            const { getByRole, findByRole } = render(<DasboardCart cart={testingCart} handleCartRemove={handleRemoveMock} />);
+            const { getByRole, findByRole } = renderWithRouter(<DasboardCart cart={testingCart} handleCartRemove={handleRemoveMock} />);
             act(() => {
                 fireEvent.click(getByRole("button", { name: "Delete" }));
             });
@@ -57,7 +58,7 @@ describe("DasboardCart", () => {
             fetchMock.enableMocks();
             fetchMock.mockResponseOnce(JSON.stringify({ id: testingCart.id, isDeleted: true }));
             const handleRemoveMock = vi.fn();
-            const { getByRole } = render(<DasboardCart cart={testingCart} handleCartRemove={handleRemoveMock} />);
+            const { getByRole } = renderWithRouter(<DasboardCart cart={testingCart} handleCartRemove={handleRemoveMock} />);
             act(() => {
                 fireEvent.click(getByRole("button", { name: "Delete" }));
             });
@@ -66,5 +67,9 @@ describe("DasboardCart", () => {
                 expect(handleRemoveMock).toHaveBeenCalledWith(testingCart.id);
             });
         });
+    });
+    it("redirects to proper route on view btn click", () => {
+        const { getByRole } = renderWithRouter(<DasboardCart cart={testingCart} handleCartRemove={defaulMock} />);
+        fireEvent.click(getByRole("button", { name: "View" }));
     });
 });

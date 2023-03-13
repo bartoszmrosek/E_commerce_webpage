@@ -1,3 +1,4 @@
+import { fireEvent } from "@testing-library/react";
 import React from "react";
 import { renderWithRouter } from "../../../testUtils/renderWithRouter";
 import { Navbar } from "./Navbar";
@@ -10,15 +11,15 @@ describe("Navbar", () => {
         expect(links.map((e) => e.textContent)).toEqual(["Store", "Dashboard"]);
     });
     it("changes route to store page", async () => {
-        const { getByRole, user } = renderWithRouter(<Navbar />);
+        const { getByRole } = renderWithRouter(<Navbar />);
         const link = getByRole("link", { name: "Store" });
-        await user.click(link);
+        fireEvent.click(link);
         expect(document.location.pathname).toEqual("/store");
     });
     it("changes route to dashboard page", async () => {
-        const { getByRole, user } = renderWithRouter(<Navbar />, { route: "/store" });
+        const { getByRole } = renderWithRouter(<Navbar />, { route: "/store" });
         const link = getByRole("link", { name: "Dashboard" });
-        await user.click(link);
+        fireEvent.click(link);
         expect(document.location.pathname).toEqual("/dashboard");
     });
 });
