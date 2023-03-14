@@ -14,7 +14,17 @@ export const App: React.FC = () => {
         <>
             <Navbar />
             <div className={styles.appContainer}>
-                <Suspense fallback={<div className={styles.mainLoader}><FadeLoader loading={true} color="var(--mainBlue)" /></div>}>
+                <Suspense fallback={(
+                    <div className={styles.mainLoader}>
+                        <FadeLoader
+                            loading={true}
+                            color="var(--mainBlue)"
+                            role="progressbar"
+                            data-testid="mainProgressBar"
+                        />
+                    </div>
+                )}
+                >
                     <Routes>
                         <Route path="/*">
                             <Route path="store" element={<Store />} />

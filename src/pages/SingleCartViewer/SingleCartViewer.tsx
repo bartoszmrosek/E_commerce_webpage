@@ -79,7 +79,7 @@ const SingleCartViewer: React.FC = () => {
                         </>
                     ) : (
                         <div className={styles.cartLoader}>
-                            <FadeLoader loading={true} color="var(--mainBlue)" />
+                            <FadeLoader loading={true} color="var(--mainBlue)" role="progressbar" />
                         </div>
                     )}
                 </>

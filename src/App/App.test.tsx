@@ -15,6 +15,11 @@ describe("App", () => {
         const { getByText } = renderWithRouter(<App />, { route: "/dashboard" });
         expect(getByText("All carts")).toBeInTheDocument();
     });
-    it.todo("handles lazy loading SingleCart component", () => {
+    it("handles lazy loading SingleCart component", async () => {
+        const { getByTestId, findByText } = renderWithRouter(<App />, { route: "/dashboard/cart/1" });
+        const mainLoader = getByTestId("mainProgressBar");
+        expect(mainLoader).toBeInTheDocument();
+        expect(await findByText("Cart 1")).toBeInTheDocument();
+        expect(mainLoader).not.toBeInTheDocument();
     });
 });
