@@ -28,3 +28,8 @@ body,
   width: 100%;
   height: 100%;
 }
+
+/* Override of recharts default class */
+.recharts-cartesian-axis-tick-value {
+  overflow-wrap: break-word;
+}

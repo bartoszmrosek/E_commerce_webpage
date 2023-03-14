@@ -19,7 +19,7 @@ export const App: React.FC = () => {
                         <Route path="/*">
                             <Route path="store" element={<Store />} />
                             <Route path="dashboard" element={<Dashboard />} />
-                            <Route path="dashboard/cart/:cartid" element={<SingleCartViewer />} />
+                            <Route path="dashboard/cart/:cartId" element={<SingleCartViewer />} />
                             <Route path="*" element={<NotFound />} />
                         </Route>
                     </Routes>
