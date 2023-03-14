@@ -86,3 +86,7 @@
 .cartTableRow+.cartTableRow {
     border-top: 1px solid var(--mainBlue);
 }
+
+.notFoundCart {
+    justify-content: center;
+}

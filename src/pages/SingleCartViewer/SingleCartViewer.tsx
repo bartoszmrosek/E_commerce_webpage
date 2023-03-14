@@ -11,7 +11,13 @@ const SingleCartViewer: React.FC = () => {
     const { cartId } = useParams();
     const [response, isLoading, makeRequest] = useFetch<Cart>(`https://dummyjson.com/carts/${cartId}`);
     const chartSpecifiedProduct = response !== null && !isValidError(response) && response.products.length > 0 ?
-        response.products.map((product) => ({ ...product, discountedPrice: (product.price / product.quantity).toFixed(2) }))
+        response.products.map((product) => (
+            {
+                ...product,
+                discountedPrice: `${(product.price / product.quantity).toFixed(2)}`,
+                price: product.price.toFixed(2),
+            }
+        ))
         : undefined;
 
     useEffect(() => {
@@ -24,9 +30,15 @@ const SingleCartViewer: React.FC = () => {
         void makeRequest();
     }, [makeRequest]);
 
+    const priceFormater = useCallback((number: number): string => {
+        return `${number} €`;
+    }, []);
+
+    const isCardIdValid = (typeof cartId === "string" && parseInt(cartId, 10) > 0);
+
     return (
-        <main className={styles.singleCartMain}>
-            {cartId && parseInt(cartId, 10) > 0 ? (
+        <main className={`${styles.singleCartMain} ${!isCardIdValid ? styles.notFoundCart : null}`}>
+            {isCardIdValid ? (
                 <>
                     <h1 className={styles.singleCartHeader}>Cart {cartId}</h1>
                     {!isLoading ? (
@@ -54,13 +66,17 @@ const SingleCartViewer: React.FC = () => {
                                                     data={chartSpecifiedProduct}
                                                     margin={{
                                                         top: 5,
-                                                        right: 30,
+                                                        right: 70,
+                                                        left: 5,
                                                         bottom: 5,
                                                     }}
                                                 >
                                                     <CartesianGrid strokeDasharray="3 3" />
-                                                    <XAxis dataKey="title" padding={{ left: 50, right: 50 }} />
-                                                    <YAxis />
+                                                    <XAxis
+                                                        dataKey="title"
+                                                        padding={{ left: 50, right: 50 }}
+                                                    />
+                                                    <YAxis tickFormatter={priceFormater} />
                                                     <Tooltip />
                                                     <Legend />
                                                     <Line type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} />
@@ -83,7 +99,7 @@ const SingleCartViewer: React.FC = () => {
                         </div>
                     )}
                 </>
-            ) : <div>Cart not found</div>}
+            ) : <h2>Cart not found</h2>}
         </main>
     );
 };

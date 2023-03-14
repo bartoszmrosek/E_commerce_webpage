@@ -9,7 +9,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest --watch",
-    "test:all": "vitest run",
+    "test:all": "vitest watch",
     "coverage": "vitest run --coverage",
     "lint": "eslint"
   },
