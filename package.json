@@ -1,9 +1,9 @@
 {
-  "name": "e-commerce_template",
+  "name": "e-commerce-dashboard",
   "private": true,
-  "version": "0.0.1",
+  "version": "1.0.0",
   "type": "module",
-  "description": "Dasboard for shop admins to making managment simple, multiple carts can be viewed as well as price for each product in them",
+  "description": "Dasboard for shop admins to making managment simple. Multiple carts can be added, view and deleted.",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
